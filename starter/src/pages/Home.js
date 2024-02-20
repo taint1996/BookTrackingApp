@@ -1,7 +1,8 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SearchBook } from "./SearchBook";
 import { ListBook } from "./ListBook";
+import { search } from "../BooksAPI";
 
 export const Home = () => {
 	const [showSearchPage, setShowSearchPage] = useState(false);
@@ -13,7 +14,9 @@ export const Home = () => {
 	return (
 		<>
 			{showSearchPage ? (
-				<SearchBook onHandleSearchBook={onHandleSearchBook} />
+				<SearchBook
+					onHandleSearchBook={onHandleSearchBook}
+				/>
 			) : (
 				<ListBook onHandleSearchBook={onHandleSearchBook} />
 			)}

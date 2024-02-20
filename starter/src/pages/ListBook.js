@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { getAll } from "../BooksAPI";
+import { Link } from "react-router-dom";
+
 export const ListBook = ({ onHandleSearchBook }) => {
 	const [books, setBooks] = useState([]);
 	const BOOK_SHELF_LIST = ["Currently Reading", "Want To Read", "Read"];
 
 	useEffect(() => {
-		getAllBooks()
+		getAllBooks();
 	}, []);
 
 	const getAllBooks = async () => {
@@ -50,7 +52,7 @@ export const ListBook = ({ onHandleSearchBook }) => {
 																style={{
 																	width: 128,
 																	height: 193,
-																	backgroundImage: `url(${book.imageLinks.thumbnail})`,
+																	backgroundImage: `url(${book.imageLinks?.thumbnail})`,
 																}}
 															></div>
 															<div className="book-shelf-changer">
@@ -69,7 +71,7 @@ export const ListBook = ({ onHandleSearchBook }) => {
 																</select>
 															</div>
 														</div>
-														<div className="book-title">{book.title}</div>
+														<div className="book-title">{book?.title}</div>
 														<div className="book-authors">
 															{book.authors?.join(", ")}
 														</div>
@@ -85,7 +87,7 @@ export const ListBook = ({ onHandleSearchBook }) => {
 				</div>
 			</div>
 			<div className="open-search">
-				<a onClick={onHandleSearchBook}>Add a book</a>
+				<Link to='/search' onClick={onHandleSearchBook}>add a book</Link>
 			</div>
 		</div>
 	);
