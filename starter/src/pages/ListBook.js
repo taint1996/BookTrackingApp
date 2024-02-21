@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { getAll } from "../BooksAPI";
+import { getAll, update } from "../BooksAPI";
 import { Link } from "react-router-dom";
+import { BookList } from "../components/home/BookList";
 
-export const ListBook = ({ onHandleSearchBook }) => {
+export const ListBook = ({ onHandleSearchBook, showSearchPage }) => {
 	const [books, setBooks] = useState([]);
 	const BOOK_SHELF_LIST = ["Currently Reading", "Want To Read", "Read"];
-
+	
 	useEffect(() => {
 		getAllBooks();
-	}, []);
+	}, [showSearchPage]);
 
 	const getAllBooks = async () => {
 		try {
@@ -29,6 +30,18 @@ export const ListBook = ({ onHandleSearchBook }) => {
 		return shelf;
 	};
 
+	const handleChangeSelectShelf = async (opt, book) => {
+		try {
+			book.shelf = opt;
+			const updateShelf = await update(book, opt);
+			setBooks([...books]);
+
+			return updateShelf;
+		} catch (e) {
+			console.log(`Error when change select shelf ${e}`);
+		}
+	};
+
 	return (
 		<div className="list-books">
 			<div className="list-books-title">
@@ -42,43 +55,11 @@ export const ListBook = ({ onHandleSearchBook }) => {
 								<h2 className="bookshelf-title">{shelf}</h2>
 								<div className="bookshelf-books">
 									<ol className="books-grid">
-										{shelfBooks(shelf).map((book, idx) => {
-											return (
-												<li key={`${book.id}-${idx}`}>
-													<div className="book">
-														<div className="book-top">
-															<div
-																className="book-cover"
-																style={{
-																	width: 128,
-																	height: 193,
-																	backgroundImage: `url(${book.imageLinks?.thumbnail})`,
-																}}
-															></div>
-															<div className="book-shelf-changer">
-																<select>
-																	<option value="none" disabled>
-																		Move to...
-																	</option>
-																	<option value="currentlyReading">
-																		Currently Reading
-																	</option>
-																	<option value="wantToRead">
-																		Want to Read
-																	</option>
-																	<option value="read">Read</option>
-																	<option value="none">None</option>
-																</select>
-															</div>
-														</div>
-														<div className="book-title">{book?.title}</div>
-														<div className="book-authors">
-															{book.authors?.join(", ")}
-														</div>
-													</div>
-												</li>
-											);
-										})}
+										<BookList
+											books={shelfBooks(shelf)}
+											onHandleChangeSelectShelf={handleChangeSelectShelf}
+											showSearchPage={showSearchPage}
+										/>
 									</ol>
 								</div>
 							</div>
@@ -87,7 +68,9 @@ export const ListBook = ({ onHandleSearchBook }) => {
 				</div>
 			</div>
 			<div className="open-search">
-				<Link to='/search' onClick={onHandleSearchBook}>add a book</Link>
+				<Link to="/search" onClick={onHandleSearchBook}>
+					add a book
+				</Link>
 			</div>
 		</div>
 	);

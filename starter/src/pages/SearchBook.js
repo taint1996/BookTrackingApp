@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { search } from "../BooksAPI";
+import { search, update } from "../BooksAPI";
+import { BookList } from "../components/home/BookList";
 
-export const SearchBook = ({ onHandleSearchBook }) => {
+export const SearchBook = ({ onHandleSearchBook, showSearchPage }) => {
 	const [searchText, setSearchText] = useState("");
 	const [searchBooks, setSearchBooks] = useState([]);
 
@@ -28,13 +29,18 @@ export const SearchBook = ({ onHandleSearchBook }) => {
 			  })
 			: [];
 
-		console.log("res ", result);
 		setSearchBooks(result);
 		return result;
 	};
 
-	const onSearchTextChange = (txt) => {
-		setSearchText(txt);
+	const handleChangeSelectShelf = async (opt, book) => {
+		try {
+			book.shelf = opt;
+			const updateShelf = await update(book, opt);
+			return updateShelf;
+		} catch (e) {
+			console.log(`Error when change select shelf ${e}`);
+		}
 	};
 
 	const renderSearchBooks = (searchBooks) => {
@@ -42,45 +48,16 @@ export const SearchBook = ({ onHandleSearchBook }) => {
 			searchBooks &&
 			searchText.length > 0 && (
 				<>
-					{searchBooks.map((book, idx) => {
-						return (
-							<li key={`${book.id}-${idx}`}>
-								<div className="book">
-									<div className="book-top">
-										<div
-											className="book-cover"
-											style={{
-												width: 128,
-												height: 193,
-												backgroundImage: `url(${book.imageLinks?.thumbnail})`,
-											}}
-										></div>
-										<div className="book-shelf-changer">
-											<select>
-												<option value="none" disabled>
-													Move to...
-												</option>
-												<option value="currentlyReading">
-													Currently Reading
-												</option>
-												<option value="wantToRead">Want to Read</option>
-												<option value="read">Read</option>
-												<option value="none">None</option>
-											</select>
-										</div>
-									</div>
-									<div className="book-title">{book.title}</div>
-									<div className="book-authors">{book.authors?.join(", ")}</div>
-								</div>
-							</li>
-						);
-					})}
+					<BookList
+						books={searchBooks}
+						showSearchPage={showSearchPage}
+						onHandleChangeSelectShelf={handleChangeSelectShelf}
+					/>
 				</>
 			)
 		);
 	};
 
-	console.log(searchBooks);
 	return (
 		<div className="search-books">
 			<div className="search-books-bar">
@@ -92,7 +69,7 @@ export const SearchBook = ({ onHandleSearchBook }) => {
 						type="text"
 						value={searchText}
 						placeholder="Search by title, author, or ISBN"
-						onChange={(e) => onSearchTextChange(e.target.value)}
+						onChange={(e) => setSearchText(e.target.value)}
 					/>
 				</div>
 			</div>
