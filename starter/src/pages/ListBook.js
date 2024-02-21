@@ -6,7 +6,7 @@ import { BookList } from "../components/home/BookList";
 export const ListBook = ({ onHandleSearchBook, showSearchPage }) => {
 	const [books, setBooks] = useState([]);
 	const BOOK_SHELF_LIST = ["Currently Reading", "Want To Read", "Read"];
-	
+
 	useEffect(() => {
 		getAllBooks();
 	}, [showSearchPage]);
@@ -32,8 +32,8 @@ export const ListBook = ({ onHandleSearchBook, showSearchPage }) => {
 
 	const handleChangeSelectShelf = async (opt, book) => {
 		try {
-			book.shelf = opt;
 			const updateShelf = await update(book, opt);
+			book.shelf = opt;
 			setBooks([...books]);
 
 			return updateShelf;
