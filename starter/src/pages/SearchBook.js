@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { search, update } from "../BooksAPI";
-import { BookList } from "../components/home/BookList";
+import BookList from "../components/home/BookList";
+import { debounce } from "lodash";
 
 export const SearchBook = ({ onHandleSearchBook, showSearchPage }) => {
 	const [searchText, setSearchText] = useState("");
@@ -18,15 +19,21 @@ export const SearchBook = ({ onHandleSearchBook, showSearchPage }) => {
 		const matchCondition = searchText.length > 0 && Array.isArray(resultSearch);
 
 		const result = matchCondition
-			? resultSearch.filter((res) => {
-					return (
-						res.title.toLowerCase().indexOf(searchText.toLowerCase()) !== -1 ||
-						res.authors
-							.join(", ")
-							.toLowerCase()
-							.indexOf(searchText.toLowerCase()) !== -1
-					);
-			  })
+			? debounce(
+					() =>
+						resultSearch.filter((res) => {
+							return (
+								res.title.toLowerCase().indexOf(searchText.toLowerCase()) !==
+									-1 ||
+								res.authors
+									?.join(", ")
+									.toLowerCase()
+									.indexOf(searchText.toLowerCase()) !== -1
+							);
+						}),
+					500,
+					{ leading: true }
+			  )
 			: [];
 
 		setSearchBooks(result);

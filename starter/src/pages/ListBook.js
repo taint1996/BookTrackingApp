@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getAll, update } from "../BooksAPI";
 import { Link } from "react-router-dom";
-import { BookList } from "../components/home/BookList";
+import BookList from "../components/home/BookList";
 
 export const ListBook = ({ onHandleSearchBook, showSearchPage }) => {
 	const [books, setBooks] = useState([]);

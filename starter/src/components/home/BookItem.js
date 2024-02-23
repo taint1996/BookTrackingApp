@@ -23,18 +23,6 @@ export const BookItem = ({
 						onHandleChangeSelectShelf={onHandleChangeSelectShelf}
 						book={book}
 					/>
-					{/* <select
-						onChange={(e) => onHandleChangeSelectShelf(e.target.value, book)}
-						defaultValue={book.shelf}
-					>
-						<option value="none" disabled>
-							Move to...
-						</option>
-						<option value="currentlyReading">Currently Reading</option>
-						<option value="wantToRead">Want to Read</option>
-						<option value="read">Read</option>
-						<option value="none">None</option>
-					</select> */}
 				</div>
 			</div>
 			<div className="book-title">{book?.title}</div>
