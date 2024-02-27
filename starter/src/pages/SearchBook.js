@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { search, update } from "../BooksAPI";
 import BookList from "../components/home/BookList";
@@ -14,7 +14,7 @@ export const SearchBook = ({ onHandleSearchBook, showSearchPage }) => {
 		}
 	}, [searchText]);
 
-	const handleSearchBook = async () => {
+	const handleSearchBook = useCallback(async () => {
 		const resultSearch = await search(searchText);
 		const matchCondition = searchText.length > 0 && Array.isArray(resultSearch);
 
@@ -38,7 +38,7 @@ export const SearchBook = ({ onHandleSearchBook, showSearchPage }) => {
 
 		setSearchBooks(result);
 		return result;
-	};
+	}, [searchBooks]);
 
 	const handleChangeSelectShelf = async (opt, book) => {
 		try {
